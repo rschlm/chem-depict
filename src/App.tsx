@@ -10,9 +10,8 @@ import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem } from "@nextui-o
 import { Accordion, AccordionItem } from "@nextui-org/react";
 import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import { Header } from './components/Header';
-import { SmilesSvgRenderer } from 'react-ocl';
 import { Tooltip } from "@nextui-org/react";
-import { Slider, SliderValue } from "@nextui-org/react";
+import { Slider } from "@nextui-org/react";
 
 
 
@@ -95,32 +94,17 @@ function App() {
     setSmilesList(retrieveSmilesList(smiles));
   }, [smiles]);
 
-  const handleOpen = (smi, name) => {
-    setModalSmiles(smi);
-    setModalName(name);
-    onOpen();
-  }
-
-  function ErrorComponent(props) {
-    return (
-      <div style={{ color: 'red' }}>
-        <div>{props.value}</div>
-        <div>{props.error.message}</div>
-      </div>
-    );
-  }
-
-  const fetchSmilesImage = async (smiles: string) => {
-    const response = await fetch(`https://www.simolecule.com/cdkdepict/depict/${map_style[style]}/svg?smi=${modalSmiles}&w=-1&h=-1&abbr=on&hdisp=bridgehead&sma=&zoom=1.3&annotate=${annotation_map[annotation]}&r=0`);
-    const data = await response.blob();
-    return URL.createObjectURL(data);
-  }
-  const handleZoomChange = (value: SliderValue) => {
+  const handleZoomChange = (value: number) => {
     if (isNaN(Number(value))) return;
-
     setZoom(value);
     setInputZoomValue(value.toString());
   };
+
+  const handleOpen = (smile: string, name: string) => {
+    setModalSmiles(smile);
+    setModalName(name);
+    onOpen();
+  }
 
   return (
     <>
@@ -160,10 +144,10 @@ function App() {
               value={style}
               size='sm'
               defaultSelectedKeys={["Color on Clear"]}
-              onChange={(e) => setStyle(style_list[e.target.value])}
+              onChange={(e) => setStyle(style_list[Number(e.target.value)])}
             >
               <SelectSection>
-                {style_list.map((item, index) => (
+                {style_list.map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>
@@ -176,10 +160,10 @@ function App() {
               value={annotation}
               size='sm'
               defaultSelectedKeys={["No annotation"]}
-              onChange={(e) => setAnnotation(annotations_list[e.target.value])}
+              onChange={(e) => setAnnotation(annotations_list[Number(e.target.value)])}
             >
               <SelectSection>
-                {annotations_list.map((item, index) => (
+                {annotations_list.map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>
@@ -192,10 +176,10 @@ function App() {
               value={hydrogens}
               size='sm'
               defaultSelectedKeys={["Chiral Hydrogens (SMARTS)"]}
-              onChange={(e) => setHydrogens(hydrogens_list[e.target.value])}
+              onChange={(e) => setHydrogens(hydrogens_list[Number(e.target.value)])}
             >
               <SelectSection>
-                {hydrogens_list.map((item, index) => (
+                {hydrogens_list.map((item) => (
                   <SelectItem key={item} value={item}>
                     {item}
                   </SelectItem>
@@ -215,7 +199,7 @@ function App() {
                 label="Reaction type"
                 className="max-w-[170px] mx-2"
                 value={reactionType}
-                onChange={(e) => setReactionType(reaction_list[e.target.value])}
+                onChange={(e) => setReactionType(reaction_list[Number(e.target.value)])}
               >
                 <SelectSection>
                   {reaction_list.map((item, index) => (
@@ -264,7 +248,7 @@ function App() {
                   </output>
                 )}
                 value={zoom}
-                onChange={handleZoomChange}
+                onChange={(value: number | number[]) => handleZoomChange(Array.isArray(value) ? value[0] : value)}
               />
             </AccordionItem>
           </Accordion>
@@ -285,7 +269,7 @@ function App() {
                     radius="lg"
                     width="100%"
                     className="w-full object-contain h-[140px]"
-                    src={`https://www.simolecule.com/cdkdepict/depict/${map_style[style]}/svg?smi=${smile}&w=-1&h=-1&abbr=on&hdisp=bridgehead&showtitle=false&sma=&zoom=${zoom}&annotate=${annotation_map[annotation]}&r=0`}
+                    src={`https://www.simolecule.com/cdkdepict/depict/${map_style[style as keyof typeof map_style]}/svg?smi=${smile}&w=-1&h=-1&abbr=on&hdisp=bridgehead&showtitle=false&sma=&zoom=${zoom}&annotate=${annotation_map[annotation as keyof typeof annotation_map]}&r=0`}
                   ></Image>
                 </CardBody>
                 {name !== "" && (
@@ -316,7 +300,7 @@ function App() {
                     radius="lg"
                     width="100%"
                     className="w-full object-contain h-[300px]"
-                    src={`https://www.simolecule.com/cdkdepict/depict/${map_style[style]}/svg?smi=${modalSmiles}&w=-1&h=-1&abbr=on&hdisp=bridgehead&showtitle=false&sma=&zoom=1.3&annotate=none&r=0`}
+                    src={`https://www.simolecule.com/cdkdepict/depict/${map_style[style as keyof typeof map_style]}/svg?smi=${modalSmiles}&w=-1&h=-1&abbr=on&hdisp=bridgehead&showtitle=false&sma=&zoom=1.3&annotate=none&r=0`}
                   ></Image>
                 </ModalBody>
                 <ModalFooter>
