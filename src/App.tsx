@@ -12,10 +12,8 @@ import { Card, CardBody, CardFooter, Image } from "@nextui-org/react";
 import { Header } from './components/Header';
 import { Tooltip } from "@nextui-org/react";
 import { Slider } from "@nextui-org/react";
-
-
-
 import { Footer } from './components/Footer';
+
 
 function App() {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -338,7 +336,7 @@ function App() {
           </ModalContent>
         </Modal>
         <Footer />
-      </div>
+      </div >
     </>
   );
 }
